@@ -23,6 +23,22 @@ export const useCartStore = defineStore("cart", {
   },
 
   actions: {
+    // Метод для сохранения корзины в localStorage
+    saveCartToLocalStorage() {
+      const userToken = localStorage.getItem("token") || "guest";
+      const cartKey = `cart_${userToken}`;
+      localStorage.setItem(cartKey, JSON.stringify(this.cart));
+    },
+
+    // Метод для загрузки корзины из localStorage
+    loadCartFromLocalStorage() {
+      const userToken = localStorage.getItem("token") || "guest";
+      const cartKey = `cart_${userToken}`;
+      const savedCart = localStorage.getItem(cartKey);
+      if (savedCart) {
+        this.cart = JSON.parse(savedCart);
+      }
+    },
     addToCart(pizza: CartItem) {
       // Проверяем, есть ли пицца уже в корзине
       const existingItem = this.cart.find((item) => item._id === pizza._id);
@@ -39,17 +55,21 @@ export const useCartStore = defineStore("cart", {
         console.log("Added new pizza to cart:", newPizza);
         console.log("Cart contents:", this.cart);
       }
+      // Сохраняем обновленное состояние корзины
+      this.saveCartToLocalStorage();
     },
 
     increaseQuantity(_id: string) {
       const item = this.cart.find((item) => item._id === _id);
       if (item) item.quantity++;
+      this.saveCartToLocalStorage(); // Сохраняем состояние корзины
     },
 
     decreaseQuantity(_id: string) {
       const item = this.cart.find((cartItem) => cartItem._id === _id);
       if (item && item.quantity > 1) {
         item.quantity--;
+        this.saveCartToLocalStorage(); // Сохраняем состояние корзины
       } else {
         this.removeFromCart(_id);
       }
@@ -57,10 +77,12 @@ export const useCartStore = defineStore("cart", {
 
     removeFromCart(_id: string) {
       this.cart = this.cart.filter((item) => item._id !== _id);
+      this.saveCartToLocalStorage(); // Сохраняем состояние корзины
     },
 
     clearCart() {
       this.cart = [];
+      this.saveCartToLocalStorage(); // Сохраняем состояние корзины
     },
   },
 });
