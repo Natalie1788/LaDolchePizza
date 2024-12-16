@@ -76,9 +76,18 @@ export default {
     };
 
     // Добавление пиццы в корзину
-    const addToCart = (pizza) => {
+    /*const addToCart = (pizza) => {
       cartStore.addToCart(pizza);
       console.log("Adding pizza to cart:", pizza);
+    };*/
+    const addToCart = (pizza) => {
+      const cartItem = {
+        _id: pizza._id.toString(), // Приведение к строке
+        name: pizza.name,
+        price: pizza.price,
+        quantity: pizza.quantity, // Начальное количество
+      };
+      cartStore.addToCart(cartItem);
     };
 
     // Переход к деталям пиццы

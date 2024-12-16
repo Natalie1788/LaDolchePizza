@@ -6,11 +6,11 @@
         <h3>{{ item.name }}</h3>
         <p>Price: {{ item.price }}$</p>
         <div>
-          <button @click="cartStore.decreaseQuantity(item.id)">-</button>
+          <button @click="cartStore.decreaseQuantity(item._id)">-</button>
           <span>{{ item.quantity }}</span>
-          <button @click="cartStore.increaseQuantity(item.id)">+</button>
+          <button @click="cartStore.increaseQuantity(item._id)">+</button>
         </div>
-        <button @click="cartStore.removeFromCart(item.id)">Remove</button>
+        <button @click="cartStore.removeFromCart(item._id)">Remove</button>
       </li>
 
       <h2>Total: {{ cartStore.totalPrice }}$</h2>
@@ -39,7 +39,7 @@ export default {
 
       const orderData = {
         pizza: cartStore.cart.map((item) => ({
-          id: item.id,
+          _id: item._id,
           name: item.name,
           price: item.price,
           quantity: item.quantity,
