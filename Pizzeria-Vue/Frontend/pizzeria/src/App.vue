@@ -2,6 +2,9 @@
 import { RouterLink, RouterView } from "vue-router";
 import Header from "./components/Header.vue";
 import Footer from "./components/Footer.vue";
+import { useUserProvider } from "@/context/userContext";
+
+useUserProvider(); // Предоставляем контекст данных о пользователе
 /*import { useCartStore } from "./stores/cartStore";
 import { onMounted } from "vue";
 

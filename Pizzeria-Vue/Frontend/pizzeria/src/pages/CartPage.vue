@@ -2,30 +2,37 @@
   <div>
     <h1>Your Cart</h1>
     <ol class="cart-list" v-if="cartStore.cart.length">
-      <li v-for="item in cartStore.cart" :key="item.id" class="cart-item">
-        <h3>{{ item.name }}</h3>
-        <p>Price: {{ item.price }}$</p>
-        <div class="btn-container">
-          <button
-            class="quantity-btn"
-            @click="cartStore.decreaseQuantity(item._id)"
-          >
-            -
-          </button>
-          <span>{{ item.quantity }}</span>
-          <button
-            class="quantity-btn"
-            @click="cartStore.increaseQuantity(item._id)"
-          >
-            +
-          </button>
+      <li v-for="item in cartStore.cart" :key="item._id" class="cart-item">
+        <img :src="item.src" :alt="item.alt" class="cart-item-image" />
 
-          <button
-            class="remove-btn"
-            @click="cartStore.removeFromCart(item._id)"
-          >
-            Remove
-          </button>
+        <div class="pizza-info">
+          <div class="pizza-name-price">
+            <h3>{{ item.name }}</h3>
+            <p>Price: {{ item.price }}$</p>
+          </div>
+
+          <div class="btn-container">
+            <button
+              class="quantity-btn"
+              @click="cartStore.decreaseQuantity(item._id)"
+            >
+              -
+            </button>
+            <span>{{ item.quantity }}</span>
+            <button
+              class="quantity-btn"
+              @click="cartStore.increaseQuantity(item._id)"
+            >
+              +
+            </button>
+
+            <button
+              class="remove-btn"
+              @click="cartStore.removeFromCart(item._id)"
+            >
+              Remove
+            </button>
+          </div>
         </div>
       </li>
 
@@ -42,10 +49,12 @@
 <script>
 import { useCartStore } from "../stores/cartStore";
 import { onMounted } from "vue";
+import { useUser } from "@/context/userContext";
 
 export default {
   setup() {
     const cartStore = useCartStore();
+    const { user } = useUser();
 
     // Загружаем корзину при монтировании компонента
     onMounted(() => {
@@ -59,12 +68,20 @@ export default {
         return;
       }
 
-      const orderData = {
+      /*const orderData = {
         pizza: cartStore.cart.map((item) => ({
           _id: item._id,
           name: item.name,
           price: item.price,
           quantity: item.quantity,
+          src: item.src,
+          alt: item.alt,
+        })),
+      };*/
+      const orderData = {
+        pizzas: cartStore.cart.map((item) => ({
+          _id: item._id, // ID пиццы
+          totalPrice: cartStore.totalPrice,
         })),
       };
       console.log(orderData);
@@ -98,7 +115,8 @@ export default {
 </script>
 
 <style scoped>
-h1 {
+h1,
+h2 {
   text-align: center;
 }
 .cart-list {
@@ -107,11 +125,15 @@ h1 {
   justify-content: center;
   /* align-items: center;*/
   gap: 15px;
-  width: 30%;
+  width: 25%;
   margin: 20px auto;
   border: 1px solid darkgreen;
   border-radius: 5px;
   padding: 20px;
+}
+.cart-item {
+  display: flex;
+  justify-content: space-around;
 }
 .quantity-btn,
 .remove-btn {
@@ -128,5 +150,16 @@ h1 {
   background-color: rgb(235, 185, 91);
   padding: 10px 20px;
   border-radius: 5px;
+}
+.cart-item-image {
+  width: 30%;
+  border: 1px solid darkgreen;
+  border-radius: 5px;
+}
+.pizza-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
 }
 </style>

@@ -69,6 +69,11 @@ export default {
         const response = await axios.get("http://localhost:5800/pizzas");
         pizzas.value = response.data;
         console.log(pizzas.value);
+        pizzas.value = response.data.map((pizza, index) => ({
+          ...pizza,
+          src: pizzaImages[index]?.src,
+          alt: pizzaImages[index]?.alt || "Pizza Image",
+        }));
       } catch (err) {
         console.error(err);
         error.value = "Failed to fetch pizzas.";
@@ -86,6 +91,8 @@ export default {
         name: pizza.name,
         price: pizza.price,
         quantity: pizza.quantity, // Начальное количество
+        src: pizza.src || getPizzaImage(index)?.src,
+        alt: pizza.alt || getPizzaImage(index)?.alt || "Pizza Image",
       };
       cartStore.addToCart(cartItem);
     };
